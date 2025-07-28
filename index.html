@@ -379,32 +379,26 @@
     <!-- Audio Elements - Using preload and proper attributes -->
     <audio id="backgroundMusic" loop preload="auto">
         <source src="background.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
     
     <audio id="yeahBuddy" preload="auto">
         <source src="yeah-buddy.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
     
     <audio id="lightweight" preload="auto">
         <source src="lightweight.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
     
     <audio id="stayHard" preload="auto">
         <source src="stay-hard.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
     
     <audio id="arnold" preload="auto">
         <source src="arnold.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
     
     <audio id="success" preload="auto">
         <source src="success.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
     
     <script>
@@ -421,8 +415,6 @@
         const stayHard = document.getElementById('stayHard');
         const arnold = document.getElementById('arnold');
         const success = document.getElementById('success');
-        const soundIcon = document.getElementById('soundIcon');
-        const gainsFill = document.getElementById('gainsFill');
         
         // Preload all audio elements
         window.addEventListener('load', function() {
@@ -577,6 +569,7 @@
                     switch(choiceNum) {
                         case 1:
                             outcomeText = 'You weigh out 200g of chicken with the precision of a scientist. Every calorie is accounted for. The gains will be clean and immaculate. The discipline is unmatched.';
+                            sound = arnold;
                             gainAmount = 20;
                             break;
                         case 2:
@@ -605,8 +598,8 @@
             // Update gains
             updateGains(gainAmount);
             
-            // Start timer for 8 seconds
-            startTimer(sceneNum, 8);
+            // Start timer for 10 seconds
+            startTimer(sceneNum, 10);
         }
         
         // Restart game function
