@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reuben's Legendary Lifting Quest</title>
+    <style>
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #f0f0f0;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(25, 25, 35, 0.85);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid #ffcc00;
+            margin-top: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-bottom: 2px solid #ffcc00;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+        
+        .scene {
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .scene.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h2 {
+            color: #ffcc00;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+        }
+        
+        .scene-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #ffcc00;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+        }
+        
+        .scene-text {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            background: linear-gradient(to right, #ffcc00, #ff9900);
+            color: #1a1a2e;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(to right, #ffd740, #ffa726);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20px;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(30deg);
+            transition: all 0.6s;
+        }
+        
+        button:hover::after {
+            left: 120%;
+        }
+        
+        .outcome {
+            background: rgba(40, 40, 60, 0.7);
+            border-left: 4px solid #ffcc00;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .show {
+            display: block;
+        }
+        
+        .gains-meter {
+            width: 100%;
+            height: 30px;
+            background: #333;
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 2px solid #444;
+        }
+        
+        .gains-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ffcc00, #ff9900);
+            width: 0%;
+            transition: width 1s ease;
+            border-radius: 15px;
+        }
+        
+        .gains-label {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+        
+        .final-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 3px solid #ffcc00;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        
+        .celebrate {
+            animation: celebrate 1.5s ease infinite;
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(30, 30, 40, 0.8);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            border: 1px solid #ffcc00;
+        }
+        
+        .audio-controls i {
+            font-size: 24px;
+            color: #ffcc00;
+        }
+        
+        .replay-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .replay-button {
+            font-size: 1.3rem;
+            padding: 18px 40px;
+            background: linear-gradient(to right, #ff3366, #ff0066);
+            box-shadow: 0 0 20px rgba(255, 0, 102, 0.5);
+        }
+        
+        .replay-button:hover {
+            background: linear-gradient(to right, #ff4d80, #ff1a75);
+            box-shadow: 0 0 25px rgba(255, 0, 102, 0.7);
+        }
+        
+        .timer {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.7rem;
+            }
+            
+            .scene-image {
+                height: 200px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔥 REUBEN'S LEGENDARY LIFTING QUEST 🔥</h1>
+            <p class="subtitle">A 2-minute journey to legendary gains</p>
+        </header>
+        
+        <!-- Scene 1: Pre-Workout Ritual -->
+        <div id="scene1" class="scene active">
+            <h2>🏋️‍♂️ Scene 1: The Pre-Workout Ritual</h2>
+            <img src="https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Pre-workout ritual" class="scene-image">
+            <p class="scene-text">The clock strikes 5:00 AM. The world of the weak is silent. But you are <strong>REUBEN</strong>. And today, the iron calls your name. Your muscles ache for glory. Before the battle, you must perform the sacred pre-workout ritual.</p>
+            <p class="scene-text"><strong>How do you prepare your mind and body?</strong></p>
+            
+            <div class="choices">
+                <button onclick="choose(1, 1)">Mix a scoop of "LIGHTWEIGHT!" pre-workout</button>
+                <button onclick="choose(1, 2)">Just drink water. Hydration is key.</button>
+                <button onclick="choose(1, 3)">Channel pure, raw intimidation</button>
+            </div>
+            
+            <div id="outcome1" class="outcome"></div>
+            <div id="timer1" class="timer"></div>
+        </div>
+        
+        <!-- Scene 2: The Squat Rack -->
+        <div id="scene2" class="scene">
+            <h2>💪 Scene 2: The Main Event - The Squat Rack</h2>
+            <img src="https://images.pexels.com/photos/769772/pexels-photo-769772.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Squat rack" class="scene-image">
+            <p class="scene-text">You arrive at the gym. It's empty. Your kingdom. You approach the holiest of sites: the squat rack. The bar is loaded for a new personal record. It's just you and the weight. It's time to move it.</p>
+            <p class="scene-text"><strong>What is your battle cry?</strong></p>
+            
+            <div class="choices">
+                <button onclick="choose(2, 1)">"LIGHTWEIGHT, BABY!"</button>
+                <button onclick="choose(2, 2)">"YEAH BUDDY!"</button>
+                <button onclick="choose(2, 3)">(Silent, intense focus)</button>
+            </div>
+            
+            <div id="outcome2" class="outcome"></div>
+            <div id="timer2" class="timer"></div>
+        </div>
+        
+        <!-- Scene 3: Post-Workout Feast -->
+        <div id="scene3" class="scene">
+            <h2>🍗 Scene 3: The Post-Workout Feast</h2>
+            <img src="https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Post-workout feast" class="scene-image">
+            <p class="scene-text">The war is won. Your muscles are screaming, but your soul is soaring. You have earned your feast. The body must be rebuilt into a monument of strength.</p>
+            <p class="scene-text"><strong>What is the recovery meal?</strong></p>
+            
+            <div class="choices">
+                <button onclick="choose(3, 1)">A perfectly calculated meal of chicken, rice, and broccoli</button>
+                <button onclick="choose(3, 2)">A giant, greasy pizza. All of it.</button>
+                <button onclick="choose(3, 3)">A protein shake with a questionable ingredient</button>
+            </div>
+            
+            <div id="outcome3" class="outcome"></div>
+            <div id="timer3" class="timer"></div>
+        </div>
+        
+        <!-- Scene 4: Final Result -->
+        <div id="scene4" class="scene">
+            <h2>🎉 Scene 4: The Final Result - HAPPY BIRTHDAY!</h2>
+            <img src="https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Arnold Schwarzenegger" class="final-image">
+            <p class="scene-text">You have done it, Reuben. You conquered the iron, feasted like a king, and proved you are anything but a LIGHTWEIGHT. The world is not ready for the sheer power you possess.</p>
+            <h2 style="font-size: 3rem; margin: 30px 0; color: #ffcc00;">🎂 HAPPY BIRTHDAY, YOU LEGEND! 🎂</h2>
+            <p class="scene-text"><em>From, Daniel</em></p>
+            
+            <div class="replay-container">
+                <button class="replay-button" onclick="restartGame()">PLAY AGAIN</button>
+            </div>
+        </div>
+        
+        <!-- Gains Meter -->
+        <div class="gains-label">GAINS PROGRESS</div>
+        <div class="gains-meter">
+            <div id="gainsFill" class="gains-fill"></div>
+        </div>
+    </div>
+    
+    <div class="audio-controls" onclick="toggleSound()">
+        <i id="soundIcon" class="fas fa-volume-up"></i>
+    </div>
+    
+    <footer>
+        <p>Reuben's Legendary Lifting Quest © 2023 | Made with 💪 and ❤️</p>
+    </footer>
+    
+    <!-- Audio Elements - Using preload and proper attributes -->
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="background.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <audio id="yeahBuddy" preload="auto">
+        <source src="yeah-buddy.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <audio id="lightweight" preload="auto">
+        <source src="lightweight.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <audio id="stayHard" preload="auto">
+        <source src="stay-hard.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <audio id="arnold" preload="auto">
+        <source src="arnold.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <audio id="success" preload="auto">
+        <source src="success.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <script>
+        // Game state
+        let soundEnabled = true;
+        let currentScene = 1;
+        let gains = 0;
+        let timerInterval = null;
+        
+        // DOM Elements
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const yeahBuddy = document.getElementById('yeahBuddy');
+        const lightweight = document.getElementById('lightweight');
+        const stayHard = document.getElementById('stayHard');
+        const arnold = document.getElementById('arnold');
+        const success = document.getElementById('success');
+        const soundIcon = document.getElementById('soundIcon');
+        const gainsFill = document.getElementById('gainsFill');
+        
+        // Preload all audio elements
+        window.addEventListener('load', function() {
+            const audioElements = [backgroundMusic, yeahBuddy, lightweight, stayHard, arnold, success];
+            audioElements.forEach(audio => {
+                if (audio) {
+                    audio.load();
+                }
+            });
+        });
+        
+        // Play background music on first user interaction
+        document.body.addEventListener('click', function initAudio() {
+            if (soundEnabled && backgroundMusic.paused) {
+                backgroundMusic.volume = 0.3;
+                backgroundMusic.play().catch(e => console.log("Background music play error:", e));
+            }
+            // Remove the event listener after first interaction
+            document.body.removeEventListener('load', initAudio);
+        });
+
+        // For mobile devices that require user interaction
+        document.body.addEventListener('touchstart', function() {
+            initAudio();
+            // Remove listener after first interaction
+            document.body.removeEventListener('touchstart', initAudio);
+        }, { once: true });
+        
+        // Toggle sound
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            soundIcon.className = soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+            
+            if (soundEnabled) {
+                if (backgroundMusic.paused) {
+                    backgroundMusic.play().catch(e => console.log("Background music play error:", e));
+                }
+            } else {
+                backgroundMusic.pause();
+            }
+        }
+        
+        // Play sound function with proper error handling
+        function playSound(soundElement) {
+            if (soundEnabled && soundElement) {
+                try {
+                    // Clone the audio element to avoid play() restrictions
+                    const sound = soundElement.cloneNode(true);
+                    sound.volume = 0.7;
+                    sound.play().catch(e => console.log("Audio play error:", e));
+                } catch (e) {
+                    console.log("Error playing sound:", e);
+                }
+            }
+        }
+        
+        // Update gains meter
+        function updateGains(amount) {
+            gains += amount;
+            if (gains > 100) gains = 100;
+            gainsFill.style.width = gains + '%';
+        }
+        
+        // Timer function
+        function startTimer(sceneNum, duration) {
+            const timerElement = document.getElementById(`timer${sceneNum}`);
+            let timeLeft = duration;
+            
+            timerElement.textContent = `Next scene in ${timeLeft} seconds...`;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = `Next scene in ${timeLeft} seconds...`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerElement.textContent = "";
+                    advanceScene(sceneNum);
+                }
+            }, 1000);
+        }
+        
+        // Advance to next scene
+        function advanceScene(sceneNum) {
+            document.getElementById(`scene${sceneNum}`).classList.remove('active');
+            if (sceneNum < 4) {
+                document.getElementById(`scene${sceneNum + 1}`).classList.add('active');
+                currentScene++;
+            } else {
+                // Final scene reached
+                playSound(success);
+                document.querySelector('.final-image').classList.add('pulse');
+                document.querySelector('.replay-button').classList.add('celebrate');
+            }
+        }
+        
+        // Choice handling
+        function choose(sceneNum, choiceNum) {
+            // Clear any existing timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            const outcomeDiv = document.getElementById(`outcome${sceneNum}`);
+            let outcomeText = '';
+            let sound = null;
+            let gainAmount = 0;
+            
+            // Scene-specific outcomes
+            switch(sceneNum) {
+                case 1: // Pre-workout
+                    switch(choiceNum) {
+                        case 1:
+                            outcomeText = 'You slam the shaker cup like a viking. The neon-colored liquid flows into your veins. "YEAH BUDDY!" Your eyes widen. You can suddenly smell colors and hear the whispers of your ancestors telling you to get a pump. You are ready.';
+                            sound = yeahBuddy;
+                            gainAmount = 25;
+                            break;
+                        case 2:
+                            outcomeText = 'Water? An admirable, yet humble choice. The ghost of Ronnie Coleman appears before you, shakes his head slowly, and whispers "Ain\'t nothin\' but a peanut." You feel hydrated, but a little judged. You press on.';
+                            sound = arnold;
+                            gainAmount = 15;
+                            break;
+                        case 3:
+                            outcomeText = 'You stare into the mirror. "STAY HARD!" you roar, frightening the cat and possibly a neighbor. You don\'t need artificial fuel. You are a self-sustaining engine of raw power. This is going to hurt, but pain is just weakness leaving the body.';
+                            sound = stayHard;
+                            gainAmount = 30;
+                            break;
+                    }
+                    break;
+                    
+                case 2: // Squat rack
+                    switch(choiceNum) {
+                        case 1:
+                            outcomeText = 'You get under the bar and scream your mantra. The plates tremble in fear. The lift is smooth, powerful, and glorious. You re-rack the weight with a thunderous clang that echoes through the gym. A single, perfect bead of sweat drips from your brow. Masterful.';
+                            sound = lightweight;
+                            gainAmount = 30;
+                            break;
+                        case 2:
+                            outcomeText = 'You let out a deafening "YEAH BUDDY!" that causes the gym\'s lights to flicker. Fueled by the spirit of the greats, you power through the rep. It\'s so beautiful, a single tear of pure testosterone rolls down your cheek.';
+                            sound = yeahBuddy;
+                            gainAmount = 25;
+                            break;
+                        case 3:
+                            outcomeText = 'No words are needed. You channel your inner Goggins. Your mind is a fortress. You complete the rep with terrifying, silent precision. You didn\'t just lift the weight. You taught it a lesson. "Stay hard."';
+                            sound = stayHard;
+                            gainAmount = 35;
+                            break;
+                    }
+                    break;
+                    
+                case 3: // Feast
+                    switch(choiceNum) {
+                        case 1:
+                            outcomeText = 'You weigh out 200g of chicken with the precision of a scientist. Every calorie is accounted for. The gains will be clean and immaculate. The discipline is unmatched.';
+                            gainAmount = 20;
+                            break;
+                        case 2:
+                            outcomeText = 'You order the meatiest, cheesiest pizza available and devour it in record time. Is it optimal for gains? No. Is it glorious? YEAH BUDDY! You regret nothing.';
+                            sound = yeahBuddy;
+                            gainAmount = 15;
+                            break;
+                        case 3:
+                            outcomeText = 'You throw whey protein, a banana, milk, and a scoop of peanut butter into a blender. Then you pause. You look at the leftover chicken in the fridge. You whisper "Lightweight," and throw it in too. The resulting beige sludge tastes like victory.';
+                            sound = lightweight;
+                            gainAmount = 25;
+                            break;
+                    }
+                    break;
+            }
+            
+            // Display outcome
+            outcomeDiv.textContent = outcomeText;
+            outcomeDiv.classList.add('show');
+            
+            // Play sound if available
+            if (sound) {
+                playSound(sound);
+            }
+            
+            // Update gains
+            updateGains(gainAmount);
+            
+            // Start timer for 8 seconds
+            startTimer(sceneNum, 8);
+        }
+        
+        // Restart game function
+        function restartGame() {
+            // Clear any existing timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            // Reset game state
+            currentScene = 1;
+            gains = 0;
+            
+            // Hide all scenes
+            const scenes = document.querySelectorAll('.scene');
+            scenes.forEach(scene => scene.classList.remove('active'));
+            
+            // Show first scene
+            document.getElementById('scene1').classList.add('active');
+            
+            // Reset gains meter
+            updateGains(0);
+            
+            // Hide outcomes
+            const outcomes = document.querySelectorAll('.outcome');
+            outcomes.forEach(outcome => outcome.classList.remove('show'));
+            
+            // Clear timers
+            const timers = document.querySelectorAll('.timer');
+            timers.forEach(timer => timer.textContent = "");
+            
+            // Remove animations
+            document.querySelector('.final-image').classList.remove('pulse');
+            document.querySelector('.replay-button').classList.remove('celebrate');
+            
+            // Play restart sound
+            if (soundEnabled) {
+                playSound(yeahBuddy);
+            }
+        }
+        
+        // Initialize gains meter
+        updateGains(0);
+    </script>
+</body>
+</html>
